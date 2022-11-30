@@ -1,7 +1,7 @@
 import struct Foundation.URL
 
 public extension String {
-  static func input(forTestFile file: String = #file) throws -> Self {
+  static func input(file: String = #file) throws -> Self {
     try .init(
       contentsOf:
         URL(fileURLWithPath: file)
@@ -12,7 +12,9 @@ public extension String {
     )
   }
 
-  static func lines(forTestFile file: String = #file) throws -> [Substring] {
-    try input(forTestFile: file).split(whereSeparator: \.isNewline)
+  var lines: [Substring] { split(whereSeparator: \.isNewline) }
+
+  var linesSplitBySpaces: [[Substring]] {
+    lines.map { $0.split(whereSeparator: \.isWhitespace) }
   }
 }
