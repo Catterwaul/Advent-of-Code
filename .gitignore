@@ -1,3 +1,4 @@
-*.xcworkspacedata
-xcuserdata/
+.DS_Store
 Package.resolved
+xcuserdata/
+*.xcworkspacedata
