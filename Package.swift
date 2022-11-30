@@ -2,7 +2,7 @@
 
 import PackageDescription
 
-let days = (2022...2022).flatMap { year in
+let days = (2021...2022).flatMap { year in
  (1...2).map { day in (year: year, day: day) }
 }
 
