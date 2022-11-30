@@ -17,14 +17,14 @@ final class TestCase: XCTestCase {
     let submarine = Submarine()
     submarine.follow(course: input.linesSplitBySpaces)
     XCTAssertEqual(submarine.position, 15)
-    XCTAssertEqual(submarine.depth, 10)
+    XCTAssertEqual(submarine.depth, 60)
   }
 
   func test_answers() throws {
     let submarine = Submarine()
     submarine.follow(course: try String.input().linesSplitBySpaces)
     XCTAssertEqual(submarine.position, 1817)
-    XCTAssertEqual(submarine.depth, 1072)
-    XCTAssertEqual(submarine.position * submarine.depth, 1947824)
+    XCTAssertEqual(submarine.depth, 997833)
+    XCTAssertEqual(submarine.position * submarine.depth, 1813062561)
   }
 }

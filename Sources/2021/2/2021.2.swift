@@ -10,14 +10,17 @@ public final class Submarine {
 
   public init(
     position: Int = 0,
-    depth: Int = 0
+    depth: Int = 0,
+    aim: Int = 0
   ) {
     self.position = position
     self.depth = depth
+    self.aim = aim
   }
 
   public var position: Int
   public var depth: Int
+  public var aim: Int
 }
 
 public extension Submarine {
@@ -26,8 +29,9 @@ public extension Submarine {
       switch command.axis {
       case .forward:
         position += command.units
+        depth += aim * command.units
       case .down:
-        depth += command.units
+        aim += command.units
       }
     }
   }
