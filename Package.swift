@@ -2,30 +2,60 @@
 
 import PackageDescription
 
-let days = (2021...2022).flatMap { year in
- (1...2).map { day in (year: year, day: day) }
+let days = [
+  (2021, 1...2),
+  (2022, 1...2)
+].flatMap { year, days in
+ days.map { (year: year, day: $0) }
 }
 
 _ = Package(
   name: "AdventOfCode",
   platforms: [.iOS(.v16), .tvOS(.v16), .macOS(.v13), .watchOS(.v9)],
-  products: days.map { year, day in
+  products: [.aoc] + days.map(Product.day),
+  dependencies: Package.Apple.allCases.map(\.package) + [.hm],
+  targets: [.aoc] + days.flatMap([Target].day)
+)
+
+extension String {
+  static let aoc = "AOC"
+  static let hemiprocneMystacea = "HemiprocneMystacea"
+  static let tests = "Tests"
+
+  static func name(year: Int, day: Int) -> Self {
+    "\(aoc).\(year).\(day)"
+  }
+}
+
+extension Product {
+  static var aoc: Product {
+    .library(name: .aoc, targets: [.aoc])
+  }
+
+  static func day(year: Int, day: Int) -> Product {
     let name = String.name(year: year, day: day)
     return .library(name: name, targets: [name])
-  },
-  dependencies:
-    Package.Apple.allCases.map(\.package)
-    + [Package.HM.package],
-  targets: days.flatMap { year, day -> [Target] in
+  }
+}
+
+extension Target {
+  static var aoc: Target {
+    .target(
+      name: .aoc,
+      dependencies: .apple + [.hm]
+    )
+  }
+}
+
+extension Array<Target> {
+  static func day(year: Int, day: Int) -> Self {
     let name = String.name(year: year, day: day)
     let nestedPath = "/\(year)/\(day)"
 
     return [
       .target(
         name: name,
-        dependencies:
-          Package.Apple.allCases.map(\.product)
-        + [Package.HM.product],
+        dependencies: .apple + [.init(stringLiteral: .aoc) , .hm],
         path: "Sources\(nestedPath)"
       ),
       .testTarget(
@@ -35,17 +65,9 @@ _ = Package(
       )
     ]
   }
-)
-
-extension String {
-  static let tests = "Tests"
-
-  static func name(year: Int, day: Int) -> Self {
-    "AOC.\(year).\(day)"
-  }
 }
 
-// MARK: -
+// MARK: - Dependencies
 
 extension Package {
   enum Apple: String, CaseIterable {
@@ -53,8 +75,12 @@ extension Package {
     case asyncAlgorithms = "async-algorithms"
     case collections
   }
+}
 
-  enum HM { }
+extension Array<Target.Dependency> {
+  static var apple: [Target.Dependency] {
+    Package.Apple.allCases.map(\.product)
+  }
 }
 
 extension Package.Apple {
@@ -78,20 +104,20 @@ extension Package.Apple {
   private var swiftPrefixedName: String { "swift-" + rawValue }
 }
 
-extension Package.HM {
-  static var package: Package.Dependency {
+extension Package.Dependency {
+  static var hm: Package.Dependency {
     .package(
-      url: "https://github.com/catterwaul/\(name)",
+      url: "https://github.com/catterwaul/" + .hemiprocneMystacea,
       branch: "develop"
     )
   }
+}
 
-  static var product: Target.Dependency {
+extension Target.Dependency {
+  static var hm: Target.Dependency {
     .product(
       name: "HM",
-      package: name
+      package: .hemiprocneMystacea
     )
   }
-
-  private static var name: String { "HemiprocneMystacea" }
 }
