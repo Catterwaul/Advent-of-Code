@@ -12,7 +12,10 @@ public extension String {
     )
   }
 
-  var lines: [Substring] { split(whereSeparator: \.isNewline) }
+  var lines: [Substring] {
+    split(omittingEmptySubsequences: false, whereSeparator: \.isNewline)
+      .dropLast()
+  }
 
   var linesSplitBySpaces: [[Substring]] {
     lines.map { $0.split(whereSeparator: \.isWhitespace) }
