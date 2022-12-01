@@ -13,6 +13,7 @@ final class TestCase: XCTestCase {
       up 3
       down 8
       forward 2
+
       """
     let submarine = Submarine()
     submarine.follow(course: input.linesSplitBySpaces)
