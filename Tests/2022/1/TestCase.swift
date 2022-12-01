@@ -22,10 +22,11 @@ final class TestCase: XCTestCase {
       
       """
       .lines
-    XCTAssertEqual(input.maxCalories, 24000)
+    XCTAssertEqual(input.maxCalories(), 24000)
   }
 
   func test_answers() throws {
-    XCTAssertEqual(try String.input().lines.maxCalories, 66487)
+    XCTAssertEqual(try String.input().lines.maxCalories(), 66487)
+    XCTAssertEqual(try String.input().lines.maxCalories(count: 3), 197301)
   }
 }
