@@ -1,8 +1,16 @@
+import Algorithms
+
 public enum Shape: CaseIterable & IteratorProtocol {
   case rock, paper, scissors
 }
 
 public extension Shape {
+  func score(against opposingShape: Self) -> Int {
+    score + result(against: opposingShape).score
+  }
+}
+
+extension Shape {
   init(_ guideInput: some StringProtocol) {
     switch guideInput {
     case "A", "X":
@@ -16,18 +24,15 @@ public extension Shape {
     }
   }
 
-  func score(against opposingShape: Self) -> Int {
-    try! caseIndex + 1 + {
-      switch result(against: opposingShape) {
-      case .win:
-        return 6
-      case .lose:
-        return 0
-      case .draw:
-        return 3
-      }
-    } ()
+  subscript(_ result: Tournament.MatchResult) -> Self {
+    switch result {
+    case .win: return next()
+    case .lose: return .allCases.cycled()[before: self]!
+    case .draw: return self
+    }
   }
+
+  var score: Int { try! caseIndex + 1 }
 }
 
 private extension Shape {
