@@ -1,11 +1,23 @@
+import Algorithms
 import HM
 
-public func sum(rucksacks: some Sequence<some StringProtocol>) -> Int {
-  rucksacks.lazy.map {
-    var iterator = $0.splitInHalf.makeIterator()
-    return iterator.next()!.first(
-      where: Set(iterator.next()!).contains
-    )!.priority
+public func sumForItemsInBothCompartments(rucksacks: some Sequence<some StringProtocol>) -> Int {
+  rucksacks.lazy.map { compartments in
+    var iterator = compartments.chunks(totalCount: 2).makeIterator()
+    func nextCompartment() -> some StringProtocol { iterator.next()! }
+    return nextCompartment()
+      .first(where: Set(nextCompartment()).contains)!
+      .priority
+  }.sum!
+}
+
+public func sumForBadges(rucksacks: some Collection<some StringProtocol>) -> Int {
+  rucksacks.chunks(ofCount: 3).lazy.map { threeRucksacks in
+    var iterator = threeRucksacks.makeIterator()
+    func nextRucksack() -> some StringProtocol { iterator.next()! }
+    return nextRucksack()
+      .first(where: Set(nextRucksack()).intersection(nextRucksack()).contains)!
+      .priority
   }.sum!
 }
 

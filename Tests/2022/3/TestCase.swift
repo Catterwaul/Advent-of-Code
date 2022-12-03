@@ -14,10 +14,12 @@ final class TestCase: XCTestCase {
 
       """
       .lines
-    XCTAssertEqual(sum(rucksacks: input), 157)
+    XCTAssertEqual(sumForItemsInBothCompartments(rucksacks: input), 157)
+    XCTAssertEqual(sumForBadges(rucksacks: input), 70)
   }
 
   func test_answers() throws {
-    XCTAssertEqual(sum(rucksacks: try String.input().lines), 7581)
+    XCTAssertEqual(sumForItemsInBothCompartments(rucksacks: try String.input().lines), 7581)
+    XCTAssertEqual(sumForBadges(rucksacks: try String.input().lines), 2525)
   }
 }
