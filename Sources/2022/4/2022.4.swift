@@ -1,14 +1,28 @@
 import HM
 
-public func overlapCount(
+public func containsCount(
   _ assignmentPairIDs: some Sequence<[[some StringProtocol]]>
 ) -> Int {
-  assignmentPairIDs.lazy.count {
-    let ranges = $0.map(ClosedRange.init)
-    return [(0, 1), (1, 0)].contains {
+  count(assignmentPairIDs) { ranges in
+    [(0, 1), (1, 0)].contains {
       ranges[$0].contains(ranges[$1])
     }
   }
+}
+
+public func overlapsCount(
+  _ assignmentPairIDs: some Sequence<[[some StringProtocol]]>
+) -> Int {
+  count(assignmentPairIDs) { ranges in
+    ranges[0].overlaps(ranges[1])
+  }
+}
+
+private func count(
+  _ assignmentPairIDs: some Sequence<[[some StringProtocol]]>,
+  _ predicate: ([ClosedRange<Int>]) -> Bool
+) -> Int {
+  assignmentPairIDs.count { predicate($0.map(ClosedRange.init)) }
 }
 
 private extension ClosedRange<Int> {
