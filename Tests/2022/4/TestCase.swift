@@ -14,13 +14,14 @@ final class TestCase: XCTestCase {
 
       """
       .assignmentPairIDs()
-    XCTAssertEqual(overlapCount(input), 2)
+    XCTAssertEqual(containsCount(input), 2)
+    XCTAssertEqual(overlapsCount(input), 4)
   }
 
   func test_answers() throws {
-    XCTAssertEqual(
-      overlapCount(try String.input().assignmentPairIDs()), 507
-    )
+    let ids = try String.input().assignmentPairIDs()
+    XCTAssertEqual(containsCount(ids), 507)
+    XCTAssertEqual(overlapsCount(ids), 897)
   }
 }
 
