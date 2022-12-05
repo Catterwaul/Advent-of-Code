@@ -1,19 +1,6 @@
 import Algorithms
 import HM
 
-public func topCrates(input: some Sequence<some StringProtocol>) -> String {
-  let sections = input.split(whereSeparator: \.isEmpty)
-  var crateStacks = Array.crateStacks(drawing: sections[0])
-  for step in sections[1].map(ProcedureStep.init) {
-    sequence().prefix(step.moveCount).forEach {
-      crateStacks[step.destinationIndex].append(
-        crateStacks[step.sourceIndex].popLast()!
-      )
-    }
-  }
-  return .init(crateStacks.map(\.last!))
-}
-
 public extension [[Character]] {
   static func crateStacks(drawing: some BidirectionalCollection<some StringProtocol>) -> Self {
     drawing.dropLast().lazy
@@ -30,7 +17,7 @@ public extension [[Character]] {
   }
 }
 
-private struct ProcedureStep {
+struct ProcedureStep {
   let moveCount: Int
   let sourceIndex: Int
   let destinationIndex: Int
