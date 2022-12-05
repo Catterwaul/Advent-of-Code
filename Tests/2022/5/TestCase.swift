@@ -24,13 +24,18 @@ final class TestCase: XCTestCase {
         ["P"]
       ]
     )
-    XCTAssertEqual(topCrates(input: input), "CMZ")
+    XCTAssertEqual(CrateMover9000.topCrates(input: input), "CMZ")
+    XCTAssertEqual(CrateMover9001.topCrates(input: input), "MCD")
   }
 
   func test_answers() throws {
     XCTAssertEqual(
-      try topCrates(input: String.input().lines),
+      try CrateMover9000.topCrates(input: String.input().lines),
       "GRTSWNJHH"
+    )
+    XCTAssertEqual(
+      try CrateMover9001.topCrates(input: String.input().lines),
+      "QLFQDBBHM"
     )
   }
 }
