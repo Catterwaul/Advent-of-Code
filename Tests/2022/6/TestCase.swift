@@ -4,14 +4,21 @@ import XCTest
 
 final class TestCase: XCTestCase {
   func test() {
-    XCTAssertEqual("mjqjpqmgbljsphdztnvjfqwrcgsmlb".indexOfLastCharacterInMarker, 7)
-    XCTAssertEqual("bvwbjplbgvbhsrlpgdmjqwftvncz".indexOfLastCharacterInMarker, 5)
-    XCTAssertEqual("nppdvjthqldpwncqszvftbrmjlhg".indexOfLastCharacterInMarker, 6)
-    XCTAssertEqual("nznrnfrfntjfmvfwmzdfjlvtqnbhcprsg".indexOfLastCharacterInMarker, 10)
-    XCTAssertEqual("zcfzfwzzqfrljwzlrfnpqdbhtmscgvjw".indexOfLastCharacterInMarker, 11)
+    XCTAssertEqual("mjqjpqmgbljsphdztnvjfqwrcgsmlb".indexAfterStartOfPacketMarker, 7)
+    XCTAssertEqual("bvwbjplbgvbhsrlpgdmjqwftvncz".indexAfterStartOfPacketMarker, 5)
+    XCTAssertEqual("nppdvjthqldpwncqszvftbrmjlhg".indexAfterStartOfPacketMarker, 6)
+    XCTAssertEqual("nznrnfrfntjfmvfwmzdfjlvtqnbhcprsg".indexAfterStartOfPacketMarker, 10)
+    XCTAssertEqual("zcfzfwzzqfrljwzlrfnpqdbhtmscgvjw".indexAfterStartOfPacketMarker, 11)
+
+    XCTAssertEqual("mjqjpqmgbljsphdztnvjfqwrcgsmlb".indexAfterStartOfMessageMarker, 19)
+    XCTAssertEqual("bvwbjplbgvbhsrlpgdmjqwftvncz".indexAfterStartOfMessageMarker, 23)
+    XCTAssertEqual("nppdvjthqldpwncqszvftbrmjlhg".indexAfterStartOfMessageMarker, 23)
+    XCTAssertEqual("nznrnfrfntjfmvfwmzdfjlvtqnbhcprsg".indexAfterStartOfMessageMarker, 29)
+    XCTAssertEqual("zcfzfwzzqfrljwzlrfnpqdbhtmscgvjw".indexAfterStartOfMessageMarker, 26)
   }
 
   func test_answers() throws {
-    XCTAssertEqual(try String.input().indexOfLastCharacterInMarker, 1987)
+    XCTAssertEqual(try String.input().indexAfterStartOfPacketMarker, 1987)
+    XCTAssertEqual(try String.input().indexAfterStartOfMessageMarker, 3059)
   }
 }
