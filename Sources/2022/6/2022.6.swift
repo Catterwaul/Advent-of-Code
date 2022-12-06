@@ -2,10 +2,12 @@ import Algorithms
 import HM
 
 public extension String {
-  var indexOfLastCharacterInMarker: Int {
-    let markerCount = 4
-    return windows(ofCount: markerCount).enumerated()
+  var indexAfterStartOfPacketMarker: Int { indexAfterMarker(count: 4) }
+  var indexAfterStartOfMessageMarker: Int { indexAfterMarker(count: 14) }
+
+  private func indexAfterMarker(count: Int) -> Int {
+    windows(ofCount: count).enumerated()
       .first(where: \.element.containsOnlyUniqueElements)!
-      .offset + markerCount
+      .offset + count
   }
 }
