@@ -32,12 +32,17 @@ final class TestCase: XCTestCase {
       """
       .lines
     XCTAssertEqual(Directory(input: input).smallSubdirectoryFileSizeSum, 95437)
+    XCTAssertEqual(Directory(input: input).directoryToDelete.fileSizeSum, 24933642)
   }
 
   func test_answers() throws {
     XCTAssertEqual(
       try Directory(input: String.input().lines).smallSubdirectoryFileSizeSum,
       1427048
+    )
+    XCTAssertEqual(
+      try Directory(input: String.input().lines).directoryToDelete.fileSizeSum,
+      2940614
     )
   }
 }
