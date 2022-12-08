@@ -108,7 +108,7 @@ extension Package.Dependency {
   static var hm: Package.Dependency {
     .package(
       url: "https://github.com/catterwaul/" + .hemiprocneMystacea,
-      branch: "develop"
+      branch: "main"
     )
   }
 }
