@@ -19,7 +19,7 @@ public final class Directory {
   private unowned let parentDirectory: Directory?
   private let subdirectories: [Directory]
 
-  private var fileSizeSum: Int {
+  public private(set) var fileSizeSum: Int {
     didSet {
       parentDirectory?.fileSizeSum += (fileSizeSum - oldValue)
     }
@@ -56,6 +56,14 @@ public extension Directory {
         .filter { $0 < 100_000 }
         .sum
     return bug!
+  }
+
+  var directoryToDelete: Directory {
+    recursive(self, \.subdirectories).lazy
+      .filter { [spaceNeeded = fileSizeSum - 40_000_000] in
+        $0.fileSizeSum >= spaceNeeded
+      }
+      .min(by: \.fileSizeSum)!
   }
 }
 
