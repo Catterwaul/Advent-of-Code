@@ -1,3 +1,4 @@
+import Algorithms
 import HM
 
 public func visibleTreeCount(_ inputLines: some Sequence<some StringProtocol>) -> Int {
@@ -19,6 +20,26 @@ public func visibleTreeCount(_ inputLines: some Sequence<some StringProtocol>) -
     ) { ($0, $1) }
   ).count
 }
+
+public func highestScenicScore(_ inputLines: [some StringProtocol]) -> Int {
+  let matrix = inputLines.transposed.map(Array.init)
+
+  return product(matrix.indices, inputLines.indices).lazy.map { x, y -> Int in
+    func count(_ sequence: some Sequence<Character>) -> Int {
+      sequence.prefixThroughFirst { $0 >= matrix[x][y] }
+        .count
+    }
+
+    return [
+      count(matrix[x][..<y].reversed()),
+      count(matrix[x].dropFirst(y + 1)),
+      count(inputLines[y].prefix(x).reversed()),
+      count(inputLines[y].dropFirst(x + 1)),
+    ].reduce(*)!
+  }.max()!
+}
+
+// MARK: -
 
 typealias EnumeratedHeight = EnumeratedSequence<AnySequence<Character>>.Element
 
