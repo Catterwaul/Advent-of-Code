@@ -14,9 +14,11 @@ final class TestCase: XCTestCase {
       """
       .lines
     XCTAssertEqual(visibleTreeCount(input), 21)
+    XCTAssertEqual(highestScenicScore(input), 8)
   }
 
   func test_answers() throws {
-    XCTAssertEqual(try visibleTreeCount(String.input().lines), 21)
+    XCTAssertEqual(try visibleTreeCount(String.input().lines), 1560)
+    XCTAssertEqual(try highestScenicScore(String.input().lines), 252000)
   }
 }
