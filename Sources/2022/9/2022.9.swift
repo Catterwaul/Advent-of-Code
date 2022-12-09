@@ -1,37 +1,41 @@
+import Algorithms
 import simd
 
-public struct Tail {
-  private var position: Vector {
-    didSet { positionsVisited.insert(position) }
-  }
+public typealias Vector = SIMD2<Int32>
 
-  public private(set) var positionsVisited: Set<SIMD2<Int32>>
+public struct Rope {
+  /// Ordered head to tail.
+  private var knotPositions: [Vector]
+  
+  public private(set) var tailPositionsVisited: Set<Vector>
 }
 
-public extension Tail {
-  /// - Parameter headMotions: Input lines split by spaces.
-  init(headMotions: some Sequence<[some StringProtocol]>) {
-    var headPosition = Vector.zero {
-      didSet {
-        let difference = headPosition &- position
+public extension Rope {
+  init(knotCount: Int) {
+    knotPositions = .init(repeating: .zero, count: knotCount)
+    tailPositionsVisited = [.zero]
+  }
+
+  /// - Parameter motions: Input lines split by spaces.
+  mutating func moveHead(_ motions: some Sequence<[some StringProtocol]>) {
+    motions.lazy.flatMap {
+      repeatElement(Vector($0[0]), count: .init($0[1])!)
+    }.forEach { headMove in
+      knotPositions[0] &+= headMove
+      for indices in knotPositions.indices.adjacentPairs() {
+        let difference = knotPositions[indices.0] &- knotPositions[indices.1]
         let clamped = clamp(difference, min: -1, max: 1)
-        if difference != clamped { position &+= clamped }
+
+        guard difference != clamped else { break } 
+
+        knotPositions[indices.1] &+= clamped
       }
-    }
-
-    self.init(position: headPosition, positionsVisited: [headPosition])
-
-    headMotions.lazy.flatMap {
-      repeatElement(.init($0[0]), count: .init($0[1])!)
-    }.forEach {
-      headPosition &+= $0
+      tailPositionsVisited.insert(knotPositions.last!)
     }
   }
 }
 
 // MARK: -
-
-private typealias Vector = SIMD2<Int32>
 
 private extension Vector {
   init(_ input: some StringProtocol) {
