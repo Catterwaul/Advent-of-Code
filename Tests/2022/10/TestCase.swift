@@ -3,6 +3,8 @@ import AOC_2022_10
 import XCTest
 
 final class TestCase: XCTestCase {
+  let cycleIndices = [20, 60, 100, 140, 180, 220]
+
   func test() {
     let input = """
       addx 15
@@ -154,28 +156,15 @@ final class TestCase: XCTestCase {
 
       """
       .linesSplitBySpaces
-    XCTAssertEqual(signalStrength(atCycle: 20, input), 420)
-    XCTAssertEqual(signalStrength(atCycle: 60, input), 1140)
-    XCTAssertEqual(signalStrength(atCycle: 100, input), 1800)
-    XCTAssertEqual(signalStrength(atCycle: 140, input), 2940)
-    XCTAssertEqual(signalStrength(atCycle: 180, input), 2880)
-    XCTAssertEqual(signalStrength(atCycle: 220, input), 3960)
 
-    XCTAssertEqual(
-      signalStrengthSum(
-        cycles: [20, 60, 100, 140, 180, 220],
-        input
-      ),
-      13140
-    )
+    let signalStrengths = Array(signalStrengths(atCycles: cycleIndices, input))
+    XCTAssertEqual(signalStrengths, [420, 1140, 1800, 2940, 2880, 3960])
+    XCTAssertEqual(signalStrengths.sum, 13140)
   }
 
   func test_answers() throws {
     XCTAssertEqual(
-      signalStrengthSum(
-        cycles: [20, 60, 100, 140, 180, 220],
-        try String.input().linesSplitBySpaces
-      ),
+      signalStrengths(atCycles: cycleIndices, try String.input().linesSplitBySpaces).sum,
       15680
     )
   }
