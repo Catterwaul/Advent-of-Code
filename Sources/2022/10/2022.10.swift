@@ -1,6 +1,7 @@
 import Algorithms
 import HM
 
+/// - Parameter lines: Input lines split by spaces.
 public func signalStrengths(
   atCycles indices: some Sequence<Int>,
   _ lines: some Sequence<some Sequence<some StringProtocol>>
@@ -11,7 +12,21 @@ public func signalStrengths(
 }
 
 /// - Parameter lines: Input lines split by spaces.
-func xRegisterSequence(
+public func pixels(
+  _ lines: some Sequence<some Sequence<some StringProtocol>>
+) -> String {
+  let crtWidth = 40
+  return .init(
+    xRegisterSequence(lines).dropLast().enumerated().lazy
+      .map { offset, xRegister in
+        (xRegister - 1...xRegister + 1).contains(offset % crtWidth) ? "#" : "."
+      }
+      .chunks(ofCount: crtWidth)
+      .joined(separator: "\n")
+  )
+}
+
+private func xRegisterSequence(
   _ lines: some Sequence<some Sequence<some StringProtocol>>
 ) -> some Sequence<Int> {
   chain(

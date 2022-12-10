@@ -160,12 +160,36 @@ final class TestCase: XCTestCase {
     let signalStrengths = Array(signalStrengths(atCycles: cycleIndices, input))
     XCTAssertEqual(signalStrengths, [420, 1140, 1800, 2940, 2880, 3960])
     XCTAssertEqual(signalStrengths.sum, 13140)
+
+    XCTAssertEqual(
+      pixels(input),
+      """
+      ##..##..##..##..##..##..##..##..##..##..
+      ###...###...###...###...###...###...###.
+      ####....####....####....####....####....
+      #####.....#####.....#####.....#####.....
+      ######......######......######......####
+      #######.......#######.......#######.....
+      """
+    )
   }
 
   func test_answers() throws {
+    let input = try String.input().linesSplitBySpaces
     XCTAssertEqual(
-      signalStrengths(atCycles: cycleIndices, try String.input().linesSplitBySpaces).sum,
+      signalStrengths(atCycles: cycleIndices, input).sum,
       15680
+    )
+    XCTAssertEqual(
+      pixels(input),
+      """
+      ####.####.###..####.#..#..##..#..#.###..
+      ...#.#....#..#.#....#..#.#..#.#..#.#..#.
+      ..#..###..###..###..####.#....#..#.#..#.
+      .#...#....#..#.#....#..#.#.##.#..#.###..
+      #....#....#..#.#....#..#.#..#.#..#.#....
+      ####.#....###..#....#..#..###..##..#....
+      """
     )
   }
 }
