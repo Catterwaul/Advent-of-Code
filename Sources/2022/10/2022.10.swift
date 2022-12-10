@@ -1,27 +1,13 @@
 import Algorithms
 import HM
 
-public func signalStrengthSum(
-  cycles: some Sequence<Int>,
+public func signalStrengths(
+  atCycles indices: some Sequence<Int>,
   _ lines: some Sequence<some Sequence<some StringProtocol>>
-) -> Int {
-  var iterator = cycles.makeIterator()
-  var index = iterator.next()
-  return xRegisterSequence(lines).enumerated().lazy
-    .filter { index == $0.offset + 1 }
-    .compactMap { x in
-      defer { index = iterator.next() }
-      return index.map { x.element * $0 }
-    }
-    .sum!
-}
-
-public func signalStrength(
-  atCycle cycleIndex: Int,
-  _ lines: some Sequence<some Sequence<some StringProtocol>>
-) -> Int {
-  let xRegister = xRegisterSequence(lines).enumerated().dropFirst(cycleIndex - 1).first!
-  return xRegister.element * (xRegister.offset + 1)
+) -> some Sequence<Int> {
+  xRegisterSequence(lines).enumerated()[sorted: indices].lazy.map { xRegister in
+    xRegister.element * (xRegister.offset + 1)
+  }
 }
 
 /// - Parameter lines: Input lines split by spaces.
@@ -45,7 +31,7 @@ func xRegisterSequence(
           $0.v = v
         }
       } else {
-        return nil as Int?
+        return nil
       }
 
       return $0.xRegister
