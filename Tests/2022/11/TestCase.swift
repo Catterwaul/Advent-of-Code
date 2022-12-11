@@ -36,16 +36,18 @@ final class TestCase: XCTestCase {
       """
       .lines
 
-    XCTAssertEqual([Monkey](input).count, 4)
-    XCTAssertEqual([Monkey](input).business(roundCount: 20, worryReduction: 3), 10605)
-
-    XCTAssertEqual([Monkey](input).business(roundCount: 10000, worryReduction: 1), 2713310158)
+    XCTAssertEqual(Barrel(input, worryReduction: 3).business(round: 20), 10605)
+    XCTAssertEqual(Barrel(input).business(round: 10000), 2713310158)
   }
 
   func test_answers() throws{
     XCTAssertEqual(
-      try [Monkey](String.input().lines).business(roundCount: 20, worryReduction: 3),
+      try Barrel(String.input().lines, worryReduction: 3).business(round: 20),
       54054
+    )
+    XCTAssertEqual(
+      try Barrel(String.input().lines).business(round: 10000),
+      14314925001
     )
   }
 }
