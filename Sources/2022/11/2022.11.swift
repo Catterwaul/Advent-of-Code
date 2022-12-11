@@ -18,12 +18,12 @@ public extension [Monkey] {
       .map(Element.init)
   }
 
-  mutating func perform(roundCount: Int) {
+  mutating func perform(roundCount: Int, worryReduction: Int) {
     sequence().prefix(roundCount).forEach {
       for monkeyIndex in indices {
         var monkey: Monkey { self[monkeyIndex] }
         for item in monkey.items {
-          let item = monkey.operate(item) / 3
+          let item = monkey.operate(item) / worryReduction
           self[monkey.targetIndex(item)].items.append(item)
         }
         self[monkeyIndex].inspectionCount += monkey.items.count
@@ -32,9 +32,9 @@ public extension [Monkey] {
     }
   }
 
-  func business(roundCount: Int = 20) -> Int {
+  func business(roundCount: Int, worryReduction: Int) -> Int {
     var monkeys = self
-    monkeys.perform(roundCount: roundCount)
+    monkeys.perform(roundCount: roundCount, worryReduction: worryReduction)
     return monkeys.lazy.map(\.inspectionCount).max(count: 2).reduce(*)!
   }
 }

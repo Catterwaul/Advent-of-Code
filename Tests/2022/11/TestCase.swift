@@ -37,10 +37,15 @@ final class TestCase: XCTestCase {
       .lines
 
     XCTAssertEqual([Monkey](input).count, 4)
-    XCTAssertEqual([Monkey](input).business(), 10605)
+    XCTAssertEqual([Monkey](input).business(roundCount: 20, worryReduction: 3), 10605)
+
+    XCTAssertEqual([Monkey](input).business(roundCount: 10000, worryReduction: 1), 2713310158)
   }
 
   func test_answers() throws{
-    XCTAssertEqual(try [Monkey](String.input().lines).business(), 10605)
+    XCTAssertEqual(
+      try [Monkey](String.input().lines).business(roundCount: 20, worryReduction: 3),
+      54054
+    )
   }
 }
