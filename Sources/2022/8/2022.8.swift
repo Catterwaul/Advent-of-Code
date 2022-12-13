@@ -12,17 +12,17 @@ public func visibleTreeCount(_ inputLines: some Sequence<some StringProtocol>) -
 public func highestScenicScore(_ inputLines: [some StringProtocol]) -> Int {
   let matrix = Matrix(rows: inputLines)
 
-  return matrix.indices.lazy.map { x, y -> Int in
+  return matrix.indices.lazy.map { index -> Int in
     func count(_ sequence: some Sequence<Character>) -> Int {
-      sequence.prefixThroughFirst { $0 >= matrix.columns[x][y] }
+      sequence.prefixThroughFirst { $0 >= matrix.columns[index.x][index.y] }
         .count
     }
 
     return [
-      count(matrix.columns[x][..<y].reversed()),
-      count(matrix.columns[x].dropFirst(y + 1)),
-      count(inputLines[y].prefix(x).reversed()),
-      count(inputLines[y].dropFirst(x + 1))
+      count(matrix.columns[index.x][..<index.y].reversed()),
+      count(matrix.columns[index.x].dropFirst(index.y + 1)),
+      count(inputLines[index.y].prefix(index.x).reversed()),
+      count(inputLines[index.y].dropFirst(index.x + 1))
     ].reduce(*)!
   }.max()!
 }
