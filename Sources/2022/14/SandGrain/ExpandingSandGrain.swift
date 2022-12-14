@@ -2,13 +2,14 @@ import HM
 
 public struct ExpandingSandGrain: SandGrainProtocol {
   struct Error: Swift.Error { }
+  public typealias Grid = AOC_2022_14.Grid<Self>
 
-  public init(grid: ExpandingGrid) {
+  public init(grid: Grid) {
     self.grid = grid
     position = [500, 0] &- grid.origin
   }
 
-  private let grid: ExpandingGrid
+  private let grid: Grid
   public var position: Vector
 
   public mutating func fall() throws {
@@ -16,7 +17,7 @@ public struct ExpandingSandGrain: SandGrainProtocol {
     while true {
       do {
         try fallOneStep()
-      } catch let error as Matrix<AOC_2022_14.Grid.Element>.IndexingError {
+      } catch let error as Matrix<GridElement>.IndexingError {
         throw error
       } catch {
         if p == position, grid.matrix[p] == .sand { throw Error() }
