@@ -1,38 +1,34 @@
 import Algorithms
 import HM
 
-public func parse(_ input: some Sequence<some StringProtocol>) -> SIMD2<Int> {
-  let lines = input.map {
-    $0.split(whereSeparator: Set(" ->").contains).map {
-      SIMD2($0.split(separator: ",").lazy.map { Int($0)! })
-    }
-  }
+typealias Vector = SIMD2<Int>
 
-  let grid = Grid(lines)
-
-  return grid.matrix.size
-}
-
-struct Grid {
+public struct Grid {
   enum Element {
     case air, rock, sand
   }
 
   var matrix: Matrix<Element>
-  let origin: SIMD2<Int>
+  let origin: Vector
 }
 
-extension Grid {
-  init(_ rockPaths: [[SIMD2<Int>]]) {
+public extension Grid {
+  init(_ input: some Sequence<some StringProtocol>) {
+    let rockPaths = input.map {
+      $0.split(whereSeparator: Set(" ->").contains).map {
+        Vector($0.split(separator: ",").lazy.map { Int($0)! })
+      }
+    }
+
     let matrixProperties = rockPaths.lazy.flatMap { $0 }.reduce(
-      (origin: [.max, .max] as SIMD2, max: [.min, .min] as SIMD2)
+      (origin: Int.max, max: [.min, .min] as SIMD2)
     ) {
-      ( [min($0.origin.x, $1.x), min($0.origin.y, $1.y)],
+      ( min($0.origin, $1.x),
         [max($0.max.x, $1.x), max($0.max.y, $1.y)]
       )
     }
 
-    origin = matrixProperties.origin
+    origin = [matrixProperties.origin, 0]
 
     let size = matrixProperties.max &- origin &+ .one
     matrix = .init(
@@ -41,10 +37,71 @@ extension Grid {
       }
     )
 
-    rockPaths.lazy.flatMap { path in
-      path.lazy.map { position in position &- matrixProperties.origin }
+    rockPaths.flatMap { path in
+      path.map { position in position &- origin }
     }.adjacentPairs().lazy.flatMap(...).forEach {
       matrix.columns[$0.x][$0.y] = .rock
+    }
+  }
+
+  var sandGrainCount: Int {
+    mutating get {
+      (1...).prefix { _ in
+        do {
+          var grain = SandGrain(grid: self)
+          try grain.fall()
+          matrix.columns[grain.position.x][grain.position.y] = .sand
+          return true
+        } catch {
+          return false
+        }
+      }.last!
+    }
+  }
+}
+
+struct SandGrain {
+  struct Error: Swift.Error { }
+
+  init(grid: Grid) {
+    position = [500, 0] &- grid.origin
+    self.grid = grid
+  }
+
+  let grid: Grid
+  var position: Vector
+
+  mutating func fall() throws {
+    while true {
+      do {
+        try fallOneStep()
+      } catch let error as AnyCollection<[Grid.Element]>.IndexingError {
+        throw error
+      } catch {
+        break
+      }
+    }
+  }
+
+  mutating func fallOneStep() throws {
+    position = try [[0, 1], [-1, 1], [1, 1]]
+      .lazy.map { [position] in position &+ $0 }
+      .first {
+        do {
+          try fall(onto: $0)
+          return true
+        } catch let error as AnyCollection<[Grid.Element]>.IndexingError {
+          throw error
+        } catch {
+          return false
+        }
+      }.unwrapped
+  }
+
+  func fall(onto position: SIMD2<Int>) throws {
+    switch try grid.matrix[validating: position] {
+    case .air: return
+    case .rock, .sand: throw Error()
     }
   }
 }
