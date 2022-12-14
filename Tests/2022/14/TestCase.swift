@@ -11,13 +11,13 @@ final class TestCase: XCTestCase {
       """
       .lines
 
-    var grid = Grid(input)
+    let grid = Grid(input)
     XCTAssertEqual(grid.sandGrainCount, 24)
     print(grid.picture)
   }
 
   func test_answers() throws {
-    var grid = Grid(try String.input().lines)
+    let grid = Grid(try String.input().lines)
     XCTAssertEqual(grid.sandGrainCount, 1133)
     print(grid.picture)
   }
