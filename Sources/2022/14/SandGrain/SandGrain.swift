@@ -1,6 +1,8 @@
 import HM
 
 public struct SandGrain: SandGrainProtocol {
+  public typealias Grid = AOC_2022_14.Grid<Self>
+
   struct Error: Swift.Error { }
 
   public init(grid: Grid) {
@@ -15,7 +17,7 @@ public struct SandGrain: SandGrainProtocol {
     while true {
       do {
         try fallOneStep()
-      } catch let error as Matrix<Grid.Element>.IndexingError {
+      } catch let error as Matrix<GridElement>.IndexingError {
         throw error
       } catch {
         break
@@ -36,7 +38,7 @@ public struct SandGrain: SandGrainProtocol {
 }
 
 public protocol SandGrainProtocol {
-  associatedtype Grid: GridProtocol
+  typealias Grid = AOC_2022_14.Grid<Self>
   init(grid: Grid)
   mutating func fall() throws
   var position: Vector { get }
