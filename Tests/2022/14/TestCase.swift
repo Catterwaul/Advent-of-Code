@@ -13,9 +13,24 @@ final class TestCase: XCTestCase {
 
     var grid = Grid(input)
     XCTAssertEqual(grid.sandGrainCount, 24)
+    print(grid.picture)
   }
 
   func test_answers() throws {
-//    XCTAssertEqual(parse(try String.input().lines), 73)
+    var grid = Grid(try String.input().lines)
+    XCTAssertEqual(grid.sandGrainCount, 1133)
+    print(grid.picture)
+  }
+}
+
+private extension Grid {
+  var picture: String {
+    matrix.description {
+      switch $0 {
+      case .air: return "💨"
+      case .rock: return "🪨"
+      case .sand: return "⌛️"
+      }
+    }
   }
 }
