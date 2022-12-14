@@ -4,11 +4,11 @@ import HM
 typealias Vector = SIMD2<Int>
 
 public struct Grid {
-  enum Element {
+  public enum Element {
     case air, rock, sand
   }
 
-  var matrix: Matrix<Element>
+  public private(set) var matrix: Matrix<Element>
   let origin: Vector
 }
 
@@ -37,10 +37,11 @@ public extension Grid {
       }
     )
 
-    rockPaths.flatMap { path in
+    rockPaths.forEach { path in
       path.map { position in position &- origin }
-    }.adjacentPairs().lazy.flatMap(...).forEach {
-      matrix.columns[$0.x][$0.y] = .rock
+        .adjacentPairs().lazy.flatMap(...).forEach {
+          matrix.columns[$0.x][$0.y] = .rock
+        }
     }
   }
 
@@ -50,7 +51,7 @@ public extension Grid {
         do {
           var grain = SandGrain(grid: self)
           try grain.fall()
-          matrix.columns[grain.position.x][grain.position.y] = .sand
+          matrix[grain.position] = .sand
           return true
         } catch {
           return false
@@ -75,7 +76,7 @@ struct SandGrain {
     while true {
       do {
         try fallOneStep()
-      } catch let error as AnyCollection<[Grid.Element]>.IndexingError {
+      } catch let error as Matrix<Grid.Element>.IndexingError {
         throw error
       } catch {
         break
@@ -90,7 +91,7 @@ struct SandGrain {
         do {
           try fall(onto: $0)
           return true
-        } catch let error as AnyCollection<[Grid.Element]>.IndexingError {
+        } catch let error as Matrix<Grid.Element>.IndexingError {
           throw error
         } catch {
           return false
