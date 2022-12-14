@@ -1,22 +1,22 @@
 import HM
 
-struct ExpandingSandGrain {
+public struct ExpandingSandGrain: SandGrainProtocol {
   struct Error: Swift.Error { }
 
-  init(grid: ExpandingGrid) {
+  public init(grid: ExpandingGrid) {
     self.grid = grid
     position = [500, 0] &- grid.origin
   }
 
   private let grid: ExpandingGrid
-  private(set) var position: Vector
+  public var position: Vector
 
-  mutating func fall() throws {
+  public mutating func fall() throws {
     let p = position
     while true {
       do {
         try fallOneStep()
-      } catch let error as Matrix<Grid.Element>.IndexingError {
+      } catch let error as Matrix<AOC_2022_14.Grid.Element>.IndexingError {
         throw error
       } catch {
         if p == position, grid.matrix[p] == .sand { throw Error() }

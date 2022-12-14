@@ -1,17 +1,17 @@
 import HM
 
-struct SandGrain {
+public struct SandGrain: SandGrainProtocol {
   struct Error: Swift.Error { }
 
-  init(grid: Grid) {
+  public init(grid: Grid) {
     self.grid = grid
     position = [500, 0] &- grid.origin
   }
 
   private let grid: Grid
-  private(set) var position: Vector
+  public var position: Vector
 
-  mutating func fall() throws {
+  public mutating func fall() throws {
     while true {
       do {
         try fallOneStep()
@@ -33,4 +33,11 @@ struct SandGrain {
         }
       }.unwrapped
   }
+}
+
+public protocol SandGrainProtocol {
+  associatedtype Grid: GridProtocol
+  init(grid: Grid)
+  mutating func fall() throws
+  var position: Vector { get }
 }
