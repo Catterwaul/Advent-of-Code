@@ -1,17 +1,6 @@
-import Algorithms
 import HM
 
-typealias Vector = SIMD2<Int>
-
-public protocol GridProtocol {
-  var matrix: Matrix<Grid.Element> { get }
-}
-
-public final class Grid: GridProtocol {
-  public enum Element {
-    case air, rock, sand
-  }
-
+public final class ExpandingGrid: GridProtocol {
   public init(_ input: some Sequence<some StringProtocol>) {
     let rockPaths = input.map {
       $0.split(whereSeparator: Set(" ->").contains).map {
@@ -32,7 +21,7 @@ public final class Grid: GridProtocol {
     let size = matrixProperties.max &- origin &+ .one
     matrix = .init(
       columns: sequence().prefix(size.x).lazy.map {
-        sequence().prefix(size.y).lazy.map { .air }
+        sequence().prefix(size.y + 2).lazy.map { Grid.Element.air }
       }
     )
 
@@ -42,17 +31,21 @@ public final class Grid: GridProtocol {
           matrix.columns[$0.x][$0.y] = .rock
         }
     }
+
+    (0..<matrix.size.x).forEach {
+      matrix[[$0, matrix.size.y - 1]] = .rock
+    }
   }
 
-  public private(set) var matrix: Matrix<Element>
-  let origin: Vector
+  public internal(set) var matrix: Matrix<Grid.Element>
+  var origin: Vector
 }
 
-public extension Grid {
+public extension ExpandingGrid {
   var sandGrainCount: Int {
     (1...).prefix { _ in
       do {
-        var grain = SandGrain(grid: self)
+        var grain = ExpandingSandGrain(grid: self)
         try grain.fall()
         matrix[grain.position] = .sand
         return true
@@ -63,14 +56,10 @@ public extension Grid {
   }
 }
 
-public extension GridProtocol {
-  var picture: String {
-    matrix.description {
-      switch $0 {
-      case .air: return "💨"
-      case .rock: return "🪨"
-      case .sand: return "⌛️"
-      }
-    }
+extension ExpandingGrid {
+  var emptyColumn: [Grid.Element] {
+    var column = sequence().prefix(matrix.size.y).map { Grid.Element.air }
+    column[matrix.size.y - 1] = .rock
+    return column
   }
 }
