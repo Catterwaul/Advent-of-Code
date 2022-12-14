@@ -1,13 +1,9 @@
 import Algorithms
 import HM
 
-typealias Vector = SIMD2<Int>
-
-public protocol GridProtocol {
-  var matrix: Matrix<Grid.Element> { get }
-}
-
 public final class Grid: GridProtocol {
+  public typealias SandGrain = AOC_2022_14.SandGrain
+
   public enum Element {
     case air, rock, sand
   }
@@ -44,33 +40,6 @@ public final class Grid: GridProtocol {
     }
   }
 
-  public private(set) var matrix: Matrix<Element>
+  public var matrix: Matrix<Element>
   let origin: Vector
-}
-
-public extension Grid {
-  var sandGrainCount: Int {
-    (1...).prefix { _ in
-      do {
-        var grain = SandGrain(grid: self)
-        try grain.fall()
-        matrix[grain.position] = .sand
-        return true
-      } catch {
-        return false
-      }
-    }.last!
-  }
-}
-
-public extension GridProtocol {
-  var picture: String {
-    matrix.description {
-      switch $0 {
-      case .air: return "💨"
-      case .rock: return "🪨"
-      case .sand: return "⌛️"
-      }
-    }
-  }
 }

@@ -1,6 +1,8 @@
 import HM
 
 public final class ExpandingGrid: GridProtocol {
+  public typealias SandGrain = ExpandingSandGrain
+
   public init(_ input: some Sequence<some StringProtocol>) {
     let rockPaths = input.map {
       $0.split(whereSeparator: Set(" ->").contains).map {
@@ -37,24 +39,10 @@ public final class ExpandingGrid: GridProtocol {
     }
   }
 
-  public internal(set) var matrix: Matrix<Grid.Element>
+  public var matrix: Matrix<Grid.Element>
   var origin: Vector
 }
 
-public extension ExpandingGrid {
-  var sandGrainCount: Int {
-    (1...).prefix { _ in
-      do {
-        var grain = ExpandingSandGrain(grid: self)
-        try grain.fall()
-        matrix[grain.position] = .sand
-        return true
-      } catch {
-        return false
-      }
-    }.last!
-  }
-}
 
 extension ExpandingGrid {
   var emptyColumn: [Grid.Element] {
