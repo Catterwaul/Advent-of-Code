@@ -10,10 +10,12 @@ final class TestCase: XCTestCase {
 
       """
       .lines
-    XCTAssertEqual(parse(input), [10, 6])
+
+    var grid = Grid(input)
+    XCTAssertEqual(grid.sandGrainCount, 24)
   }
 
   func test_answers() throws {
-    XCTAssertEqual(parse(try String.input().lines), [73, 159])
+//    XCTAssertEqual(parse(try String.input().lines), 73)
   }
 }
