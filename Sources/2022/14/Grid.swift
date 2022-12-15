@@ -3,7 +3,11 @@ import HM
 
 public typealias Vector = SIMD2<Int>
 
-public final class Grid<SandGrain: SandGrainProtocol> {
+public final class Grid {
+  enum Element {
+    case air, rock, sand
+  }
+
   public init(_ input: some Sequence<some StringProtocol>, infiniteFloor: Bool) {
     let rockPaths = input.map {
       $0.split(whereSeparator: Set(" ->").contains).map {
@@ -19,12 +23,13 @@ public final class Grid<SandGrain: SandGrainProtocol> {
       )
     }
 
+    self.infiniteFloor = infiniteFloor
     origin = [matrixProperties.origin, 0]
 
     let size = matrixProperties.max &- origin &+ .one
     matrix = .init(
       columns: sequence().prefix(size.x).lazy.map {
-        sequence().prefix(infiniteFloor.reduce(size.y) { $0 + 2}).lazy.map { GridElement.air }
+        sequence().prefix(infiniteFloor.reduce(size.y) { $0 + 2 }).lazy.map { .air }
       }
     )
 
@@ -42,7 +47,8 @@ public final class Grid<SandGrain: SandGrainProtocol> {
     }
   }
 
-  public var matrix: Matrix<GridElement>
+  var matrix: Matrix<Element>
+  let infiniteFloor: Bool
   var origin: Vector
 }
 
@@ -72,13 +78,12 @@ public extension Grid {
 }
 
 extension Grid {
-  var emptyColumn: [GridElement] {
-    var column = sequence().prefix(matrix.size.y).map { GridElement.air }
-    column[matrix.size.y - 1] = .rock
-    return column
+  var emptyColumn: [Element] {
+    .init(
+      chain(
+        sequence().prefix(matrix.size.y - 1).lazy.map { Element.air },
+        .rock
+      )
+    )
   }
-}
-
-public enum GridElement {
-  case air, rock, sand
 }
