@@ -11,7 +11,7 @@ final class TestCase: XCTestCase {
       """
       .lines
 
-    let grid = Grid<SandGrain>(input, infiniteFloor: false)
+    let grid = Grid(input, infiniteFloor: false)
     XCTAssertEqual(grid.sandGrainCount, 24)
     XCTAssertEqual(
       grid.picture,
@@ -29,7 +29,7 @@ final class TestCase: XCTestCase {
       """
     )
 
-    let expandingGrid = Grid<ExpandingSandGrain>(input, infiniteFloor: true)
+    let expandingGrid = Grid(input, infiniteFloor: true)
     XCTAssertEqual(expandingGrid.sandGrainCount, 93)
     XCTAssertEqual(
       expandingGrid.picture,
@@ -51,13 +51,13 @@ final class TestCase: XCTestCase {
   }
 
   func test_part1() throws {
-    let grid = Grid<SandGrain>(try String.input().lines, infiniteFloor: false)
+    let grid = Grid(try String.input().lines, infiniteFloor: false)
     XCTAssertEqual(grid.sandGrainCount, 1133)
     print(grid.picture)
   }
 
   func test_part2() throws {
-    let grid = Grid<ExpandingSandGrain>(try String.input().lines, infiniteFloor: true)
+    let grid = Grid(try String.input().lines, infiniteFloor: true)
     XCTAssertEqual(grid.sandGrainCount, 27566)
     print(grid.picture)
   }
