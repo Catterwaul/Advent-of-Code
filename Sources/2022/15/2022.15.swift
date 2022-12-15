@@ -18,11 +18,13 @@ public func positionCountWhereBeaconsCannotBe(
     )
   })
 
-  return sensors.reduce(into: Set()) {
-    $0.formUnion($1.coverage(inRow: row))
-  }.subtracting(
-    Set(sensors.map(\.closestBeaconPosition)).filter { $0.y == row }.lazy.map(\.x)
-  ).count
+  return sensors
+    .lazy.compactMap { $0.coverage(inRow: row) }
+    .reduce(into: Set()) { $0.formUnion($1) }
+    .subtracting(
+      Set(sensors.map(\.closestBeaconPosition)).filter { $0.y == row }.lazy.map(\.x)
+    )
+    .count
 }
 
 private struct Sensor: Hashable {
@@ -31,13 +33,13 @@ private struct Sensor: Hashable {
 }
 
 extension Sensor {
-  func coverage(inRow index: Vector.Scalar) -> Set<Vector.Scalar> {
+  func coverage(inRow index: Vector.Scalar) -> ClosedRange<Vector.Scalar>? {
     guard
-      case let xRange = range - abs(index - position.y),
-      xRange >= 0
-    else { return [] }
+      case let range = range - abs(index - position.y),
+      range >= 0
+    else { return nil }
 
-    return .init(position.x - xRange...position.x + xRange)
+    return position.x ± range
   }
 }
 
