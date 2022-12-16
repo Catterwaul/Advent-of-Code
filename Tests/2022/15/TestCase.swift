@@ -23,12 +23,17 @@ final class TestCase: XCTestCase {
       """
       .lines
     XCTAssertEqual(positionCountWhereBeaconsCannotBe(input, row: 10), 26)
+    XCTAssertEqual(tuningFrequency(input), 56000011)
   }
 
   func test_answers() throws {
     XCTAssertEqual(
       positionCountWhereBeaconsCannotBe(try String.input().lines, row: 2000000),
       5525990
+    )
+    XCTAssertEqual(
+      tuningFrequency(try String.input().lines),
+      11756174628223
     )
   }
 }
