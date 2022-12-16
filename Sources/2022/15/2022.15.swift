@@ -25,14 +25,16 @@ public func positionCountWhereBeaconsCannotBe(
 public func tuningFrequency(
   _ input: some Sequence<some StringProtocol>
 ) -> Int  {
-  0...
-    .lazy.compactMap {
-      [sensors = Set(input)]
-      y in
-      sensors.coverage(inRow: y)
+  var sensors = Set(input)
+  return (0 as Vector.Scalar)...
+    .lazy.compactMap { row in
+      // An optimization, but only makes it O(nlogn).
+      sensors = sensors.filter { $0.canSee(row: row) }
+
+      return sensors.coverage(inRow: row)
         .adjacentPairs()
         .first
-        .map { Int($1.lowerBound - 1) * 4000000 + Int(y) }
+        .map { Int($1.lowerBound - 1) * 4000000 + Int(row) }
     }
     .first!
 }
@@ -45,19 +47,33 @@ private struct Sensor: Hashable {
 }
 
 extension Sensor {
+  var border: some Sequence<Vector> {
+    [Vector.up, .right, .down, .left, .up]
+      .lazy.map { $0 &* (range + 1) &+ position }
+      .adjacentPairs().lazy.flatMap(..<)
+  }
+
+  var horizontalCoverage: ClosedRange<Vector.Scalar> { position.x ± range }
+
   func coverage(inRow index: Vector.Scalar) -> ClosedRange<Vector.Scalar>? {
     Optional(range - abs(index - position.y))
       .filter { $0 >= 0 }
       .map { position.x ± $0 }
   }
 
-  private var range: Vector.Scalar { abs(position &- closestBeaconPosition).wrappedSum() }
-}
+  func canSee(_ position: Vector) -> Bool {
+    distance(position) <= range
+  }
 
-extension Sequence<Sensor> {
-  func coverage(inRow row: Vector.Scalar) -> some Sequence<ClosedRange<Vector.Scalar>> {
-    lazy.compactMap { $0.coverage(inRow: row) }
-      .accumulated()
+  /// Only works when scanning up from zero.
+  func canSee(row: Vector.Scalar) -> Bool {
+    position.y + range >= row
+  }
+
+  private var range: Vector.Scalar { distance(closestBeaconPosition) }
+
+  private func distance(_ position: Vector) -> Vector.Scalar {
+    abs(position &- self.position).wrappedSum()
   }
 }
 
@@ -73,5 +89,12 @@ extension Set<Sensor> {
         )
       }
     )
+  }
+}
+
+extension Sequence<Sensor> {
+  func coverage(inRow row: Vector.Scalar) -> some Sequence<ClosedRange<Vector.Scalar>> {
+    lazy.compactMap { $0.coverage(inRow: row) }
+      .accumulated()
   }
 }
