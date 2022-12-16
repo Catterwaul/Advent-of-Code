@@ -7,24 +7,27 @@ typealias Vector = SIMD2<Int32>
 public func positionCountWhereBeaconsCannotBe(
   _ input: some Sequence<some StringProtocol>,
   row: Int32
-) -> Int {
+) -> Int32 {
   let sensors = Set(input.map {
     var iterator = $0.split { !$0.isNumber && $0 != "-" }.makeIterator()
     var next: Vector.Scalar { .init(iterator.next()!)! }
-
     return Sensor(
       position: [next, next],
       closestBeaconPosition: [next, next]
     )
   })
 
-  return sensors
-    .lazy.compactMap { $0.coverage(inRow: row) }
-    .reduce(into: Set()) { $0.formUnion($1) }
-    .subtracting(
-      Set(sensors.map(\.closestBeaconPosition)).filter { $0.y == row }.lazy.map(\.x)
-    )
-    .count
+  let coverages = Array(
+    sensors
+      .compactMap { $0.coverage(inRow: row) }
+      .accumulated()
+  )
+
+  return coverages.adjacentPairs()
+    .lazy.map { $1.lowerBound - $0.upperBound - 1 }
+    .sum
+    .reduce(coverages.last!.upperBound - coverages.first!.lowerBound + 1, -)
+    - .init(Set(sensors.map(\.closestBeaconPosition)).count { $0.y == row })
 }
 
 private struct Sensor: Hashable {
@@ -34,12 +37,9 @@ private struct Sensor: Hashable {
 
 extension Sensor {
   func coverage(inRow index: Vector.Scalar) -> ClosedRange<Vector.Scalar>? {
-    guard
-      case let range = range - abs(index - position.y),
-      range >= 0
-    else { return nil }
-
-    return position.x ± range
+    Optional(range - abs(index - position.y))
+      .filter { $0 >= 0 }
+      .map { position.x ± $0 }
   }
 }
 
