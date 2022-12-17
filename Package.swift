@@ -4,7 +4,7 @@ import PackageDescription
 
 let days = [
   (2021, 1...3),
-  (2022, 1...25)
+  (2022, 1...15)
 ].flatMap { year, days in
  days.map { (year: year, day: $0) }
 }
