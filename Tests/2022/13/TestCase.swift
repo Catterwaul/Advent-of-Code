@@ -35,7 +35,7 @@ final class TestCase: XCTestCase {
     XCTAssertEqual(rightOrderedIndexSum(input), 13)
   }
 
-  func test_answers() {
-
+  func test_answers() throws {
+    XCTAssertGreaterThan(rightOrderedIndexSum(try String.input().lines), 756)
   }
 }
