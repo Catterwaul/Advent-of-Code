@@ -31,16 +31,19 @@ extension Packet {
         }
         .reduce(into: [ArrayNestReference.array()]) { lists, string in
           var lastList: ArrayNestReference { lists.last! }
+          func append(_ reference: ArrayNestReference) {
+            try! lastList.wrappedValue.setArray { $0.append(reference) }
+          }
 
           switch string {
           case "[":
             let list = ArrayNestReference.array()
-            try! lastList.wrappedValue.append(list)
+            append(list)
             lists.append(list) // push it onto the stack
           case "]":
             lists.removeLast() // pop off the top of the stack
           default:
-            try! lastList.wrappedValue.append(.element(Int(string)!))
+            append(.element(Int(string)!))
           }
         }[0].wrappedValue
     )
