@@ -1,7 +1,8 @@
-// swift-tools-version: 5.7
+// swift-tools-version: 6.0
 
 import PackageDescription
 
+/// `(year, day)` tuple array
 let days = [
   (2021, 1...3),
   (2022, 1...25)
@@ -11,15 +12,14 @@ let days = [
 
 _ = Package(
   name: "AdventOfCode",
-  platforms: [.iOS(.v16), .tvOS(.v16), .macOS(.v13), .watchOS(.v9)],
+  platforms: [.macOS(.v15)],
   products: [.aoc] + days.map(Product.day),
-  dependencies: Package.Apple.allCases.map(\.package) + [.hm],
+  dependencies: Repository.all.map(\.package),
   targets: [.aoc] + days.flatMap([Target].day)
 )
 
 extension String {
   static let aoc = "AOC"
-  static let hemiprocneMystacea = "HemiprocneMystacea"
   static let tests = "Tests"
 
   static func name(year: Int, day: Int) -> Self {
@@ -42,12 +42,12 @@ extension Target {
   static var aoc: Target {
     .target(
       name: .aoc,
-      dependencies: .apple + [.hm]
+      dependencies: Repository.all.map(\.product)
     )
   }
 }
 
-extension Array<Target> {
+extension [Target] {
   static func day(year: Int, day: Int) -> Self {
     let name = String.name(year: year, day: day)
     let nestedPath = "/\(year)/\(day)"
@@ -55,7 +55,7 @@ extension Array<Target> {
     return [
       .target(
         name: name,
-        dependencies: .apple + [.init(stringLiteral: .aoc) , .hm],
+        dependencies: [.init(stringLiteral: .aoc)] + Repository.all.map(\.product),
         path: "Sources\(nestedPath)"
       ),
       .testTarget(
@@ -69,55 +69,43 @@ extension Array<Target> {
 
 // MARK: - Dependencies
 
-extension Package {
-  enum Apple: String, CaseIterable {
-    case algorithms
-    case asyncAlgorithms = "async-algorithms"
-    case collections
-  }
+struct Repository {
+  let package: Package.Dependency
+  let product: Target.Dependency
 }
 
-extension Array<Target.Dependency> {
-  static var apple: [Target.Dependency] {
-    Package.Apple.allCases.map(\.product)
-  }
-}
-
-extension Package.Apple {
-  var package: Package.Dependency {
-    let url = "https://github.com/apple/" + swiftPrefixedName
-    switch self {
-    case .asyncAlgorithms:
-      return .package(url: url, revision: "cc0621eb1bb3ae0e6dd0d51beedbdb1f655c911e")
-    default:
-      return .package(url: url, branch: "main")
-    }
+extension Repository {
+  static var all: [Repository]  {
+    [ .apple(repositoryName: "algorithms"),
+      .apple(repositoryName: "async-algorithms"),
+      .apple(repositoryName: "collections")
+    ]
   }
 
-  var product: Target.Dependency {
-    .product(
-      name: rawValue.split(separator: "-").map(\.capitalized).joined(),
-      package: swiftPrefixedName
+  static func apple(repositoryName: String) -> Self {
+    .init(
+      organization: "apple",
+      name: repositoryName.split(separator: "-").map(\.capitalized).joined(),
+      repositoryName: "swift-\(repositoryName)"
     )
   }
 
-  private var swiftPrefixedName: String { "swift-" + rawValue }
-}
-
-extension Package.Dependency {
-  static var hm: Package.Dependency {
-    .package(
-      url: "https://github.com/catterwaul/" + .hemiprocneMystacea,
-      branch: "main"
+  static func catterwaul(name: String, repositoryName: String? = nil, branch: String = "main") -> Self {
+    .init(
+      organization: "Catterwaul",
+      name: name,
+      repositoryName: repositoryName ?? name,
+      branch: branch
     )
   }
-}
 
-extension Target.Dependency {
-  static var hm: Target.Dependency {
-    .product(
-      name: "HM",
-      package: .hemiprocneMystacea
+  private init(organization: String, name: String, repositoryName: String, branch: String = "main") {
+    self.init(
+      package: .package(
+        url: "https://github.com/\(organization)/\(repositoryName)",
+        branch: branch
+      ),
+      product: .product(name: name, package: repositoryName)
     )
   }
 }
