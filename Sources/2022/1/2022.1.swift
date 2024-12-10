@@ -1,4 +1,4 @@
-import HM
+import HMAlgorithms
 import Algorithms
 
 public extension Sequence where Element: StringProtocol {

@@ -1,0 +1,24 @@
+{
+  "configurations" : [
+    {
+      "id" : "84EA8639-4DB5-4757-88CF-8C57E2F6E3D7",
+      "name" : "Configuration 1",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+
+  },
+  "testTargets" : [
+    {
+      "target" : {
+        "containerPath" : "container:",
+        "identifier" : "AOC.2022.1.Tests",
+        "name" : "AOC.2022.1.Tests"
+      }
+    }
+  ],
+  "version" : 1
+}
