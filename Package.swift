@@ -61,7 +61,8 @@ extension [Target] {
       .testTarget(
         name: "\(name)." + .tests,
         dependencies: [.init(stringLiteral: name)],
-        path: .tests + nestedPath
+        path: .tests + nestedPath,
+        resources: [.process("Input.md")]
       )
     ]
   }
