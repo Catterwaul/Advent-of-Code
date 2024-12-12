@@ -1,0 +1,24 @@
+{
+  "configurations" : [
+    {
+      "id" : "71FD7020-7870-49F5-821A-FA74715D4599",
+      "name" : "Configuration 1",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+
+  },
+  "testTargets" : [
+    {
+      "target" : {
+        "containerPath" : "container:",
+        "identifier" : "AOC.2024.1.Tests",
+        "name" : "AOC.2024.1.Tests"
+      }
+    }
+  ],
+  "version" : 1
+}

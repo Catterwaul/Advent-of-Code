@@ -57,7 +57,8 @@ extension [Target] {
       .target(
         name: name,
         dependencies: [.init(stringLiteral: .aoc)] + Repository.all.map(\.product),
-        path: "Sources\(nestedPath)"
+        path: "Sources\(nestedPath)",
+        resources: [.process("Shaders.metal")]
       ),
       .testTarget(
         name: "\(name)." + .tests,
