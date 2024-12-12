@@ -5,7 +5,8 @@ import PackageDescription
 /// `(year, day)` tuple array
 let days = [
   (2021, 1...3),
-  (2022, 1...25)
+  (2022, 1...15),
+  (2024, 1...1)
 ].flatMap { year, days in
  days.map { (year: year, day: $0) }
 }
@@ -79,7 +80,9 @@ extension Repository {
   static var all: [Repository]  {
     [ .apple(repositoryName: "algorithms"),
       .apple(repositoryName: "async-algorithms"),
-      .apple(repositoryName: "collections")
+      .apple(repositoryName: "collections"),
+      .catterwaul(name: "HMAlgorithms", repositoryName: "HemiprocneMystaceaAlgorithms"),
+      .catterwaul(name: "MetalZoon")
     ]
   }
 
